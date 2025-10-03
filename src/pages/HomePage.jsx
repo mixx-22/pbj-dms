@@ -19,6 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import moment from "moment";
+import { SmallAddIcon } from "@chakra-ui/icons";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -130,9 +131,9 @@ export default function HomePage() {
         <Button
           colorScheme="purple"
           onClick={() => navigate("/documents")}
-          h="40px"
+          leftIcon={<SmallAddIcon />}
         >
-          + New Document
+          New Document
         </Button>
       </Flex>
 

@@ -38,7 +38,13 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
-import { DeleteIcon, EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
+import {
+  DeleteIcon,
+  EditIcon,
+  LockIcon,
+  SearchIcon,
+  SmallAddIcon,
+} from "@chakra-ui/icons";
 
 export default function Accounts() {
   const toast = useToast();
@@ -246,8 +252,12 @@ export default function Accounts() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </InputGroup>
-          <Button colorScheme="purple" onClick={handleAdd} w="200px">
-            + Add Account
+          <Button
+            colorScheme="purple"
+            onClick={handleAdd}
+            leftIcon={<SmallAddIcon />}
+          >
+            Add Account
           </Button>
         </Flex>
       </Stack>

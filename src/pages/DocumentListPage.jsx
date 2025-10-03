@@ -38,7 +38,14 @@ import {
   ButtonGroup,
   Heading,
 } from "@chakra-ui/react";
-import { DeleteIcon, EditIcon, ViewIcon, SearchIcon } from "@chakra-ui/icons";
+import {
+  DeleteIcon,
+  EditIcon,
+  ViewIcon,
+  SearchIcon,
+  AddIcon,
+  SmallAddIcon,
+} from "@chakra-ui/icons";
 
 export default function Documents() {
   const toast = useToast();
@@ -285,8 +292,12 @@ export default function Documents() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </InputGroup>
-          <Button colorScheme="purple" onClick={openAddModal} w="200px">
-            + Create Document
+          <Button
+            colorScheme="purple"
+            onClick={openAddModal}
+            leftIcon={<SmallAddIcon />}
+          >
+            Create Document
           </Button>
         </Flex>
       </Stack>
