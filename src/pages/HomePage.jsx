@@ -108,10 +108,10 @@ export default function HomePage() {
           {user && (
             <>
               <Heading size="xl" color="blackAlpha.600">
-                Welcome,
-              </Heading>
-              <Heading size="2xl" color="purple.600">
-                {user.username}!
+                Welcome,{" "}
+                <Heading as="span" size="inherit" color="purple.600">
+                  {user.username}!
+                </Heading>
               </Heading>
             </>
           )}
