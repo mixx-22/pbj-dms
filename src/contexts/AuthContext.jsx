@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
     { username: "admin", password: "123", userType: "admin" },
     { username: "mike", password: "123", userType: "admin" },
     { username: "ajad", password: "123", userType: "admin" },
-    { username: "aristotle", password: "123", userType: "user" },
+    { username: "docyummy", password: "123", userType: "user" },
   ];
 
   const login = (username, password) => {

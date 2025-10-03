@@ -53,7 +53,7 @@ export default function App() {
   const [accounts, setAccounts] = useState([
     { id: 1, name: "Mike Jimenez", username: "mike", role: "Product Designer", email: "mjimenez@pbj.com", status: "Active", userType: "Admin" },
     { id: 2, name: "Ajad Singh Parmar", username: "Ajad", role: "Product Manager", email: "aparmar@pbj.com", status: "Active", userType: "Admin" },
-    { id: 3, name: "Aristotle Bataan", username: "DocYummy", role: "Product Supervisor", email: "abataan@pbj.com", status: "Active", userType: "User" },
+    { id: 3, name: "Aristotle Bataan", username: "docyummy", role: "Product Supervisor", email: "abataan@pbj.com", status: "Active", userType: "User" },
     { id: 4, name: "Rhoy Sampaga", username: "Rhoy", role: "Accounting Manager", email: "rsampaga@pbj.com", status: "Inactive", userType: "User" },
   ]);
 
