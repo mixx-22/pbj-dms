@@ -1,5 +1,5 @@
 // src/components/ProfileModal.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -14,9 +14,14 @@ import {
   Select,
   Button,
   useToast,
+  Collapse,
+  ButtonGroup,
 } from "@chakra-ui/react";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function ProfileModal({ isOpen, onClose, account, onSave }) {
+  const { user = { type: "user" } } = useAuth();
+  const isAdmin = useMemo(() => user?.userType === "admin", [user]);
   const toast = useToast();
   const [formData, setFormData] = useState({
     id: null,
@@ -72,6 +77,7 @@ export default function ProfileModal({ isOpen, onClose, account, onSave }) {
           <FormControl mb={3}>
             <FormLabel>Name</FormLabel>
             <Input
+              isReadOnly={!isAdmin}
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
             />
@@ -79,6 +85,7 @@ export default function ProfileModal({ isOpen, onClose, account, onSave }) {
           <FormControl mb={3}>
             <FormLabel>Username</FormLabel>
             <Input
+              isReadOnly={!isAdmin}
               value={formData.username}
               onChange={(e) => handleChange("username", e.target.value)}
             />
@@ -86,6 +93,7 @@ export default function ProfileModal({ isOpen, onClose, account, onSave }) {
           <FormControl mb={3}>
             <FormLabel>Email</FormLabel>
             <Input
+              isReadOnly={!isAdmin}
               type="email"
               value={formData.email}
               onChange={(e) => handleChange("email", e.target.value)}
@@ -94,6 +102,7 @@ export default function ProfileModal({ isOpen, onClose, account, onSave }) {
           <FormControl mb={3}>
             <FormLabel>Role</FormLabel>
             <Input
+              isReadOnly={!isAdmin}
               value={formData.role}
               onChange={(e) => handleChange("role", e.target.value)}
             />
@@ -101,6 +110,7 @@ export default function ProfileModal({ isOpen, onClose, account, onSave }) {
           <FormControl mb={3}>
             <FormLabel>Status</FormLabel>
             <Select
+              isDisabled={!isAdmin}
               value={formData.status}
               onChange={(e) => handleChange("status", e.target.value)}
             >
@@ -112,6 +122,7 @@ export default function ProfileModal({ isOpen, onClose, account, onSave }) {
           <FormControl mb={3}>
             <FormLabel>User Type</FormLabel>
             <Select
+              isDisabled={!isAdmin}
               value={formData.userType}
               onChange={(e) => handleChange("userType", e.target.value)}
             >
@@ -122,12 +133,21 @@ export default function ProfileModal({ isOpen, onClose, account, onSave }) {
           </FormControl>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" mr={3} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="blue" onClick={handleSave}>
-            Save
-          </Button>
+          <Collapse unmountOnExit in={!isAdmin}>
+            <Button variant="ghost" onClick={onClose}>
+              Close
+            </Button>
+          </Collapse>
+          <Collapse unmountOnExit in={isAdmin}>
+            <ButtonGroup spacing={2}>
+              <Button variant="ghost" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="blue" onClick={handleSave}>
+                Save
+              </Button>
+            </ButtonGroup>
+          </Collapse>
         </ModalFooter>
       </ModalContent>
     </Modal>
