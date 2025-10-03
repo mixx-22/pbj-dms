@@ -1,5 +1,6 @@
 // src/pages/AccountListPage.jsx
-import { useState, useRef } from "react";
+import { useState } from "react";
+import Swal from "sweetalert2";
 import {
   Box,
   Button,
@@ -27,12 +28,6 @@ import {
   InputGroup,
   InputLeftElement,
   useToast,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
 
@@ -52,31 +47,32 @@ export default function Accounts() {
   const [passwordData, setPasswordData] = useState({ newPassword: "", confirmPassword: "" });
   const [search, setSearch] = useState("");
 
-  const [deleteId, setDeleteId] = useState(null); // For confirmation dialog
-  const cancelRef = useRef();
-
   const handleChange = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
   const handlePwdChange = (field, value) => setPasswordData(prev => ({ ...prev, [field]: value }));
 
-  const confirmDelete = (id) => setDeleteId(id);
-
-  const handleDelete = () => {
-    const accountToDelete = accounts.find(a => a.id === deleteId);
-    setAccounts(accounts.filter(a => a.id !== deleteId));
+  const handleDelete = (id) => {
+    const accountToDelete = accounts.find(a => a.id === id);
+    setAccounts(accounts.filter(a => a.id !== id));
     toast({ title: "Account deleted", description: `${accountToDelete.name} has been removed.`, status: "success", duration: 3000, isClosable: true });
-    setDeleteId(null);
   };
 
-  const handleEdit = (account) => {
-    setFormData(account);
-    onOpen();
+  const confirmDelete = (id) => {
+    const account = accounts.find(a => a.id === id);
+    Swal.fire({
+      title: 'Are you sure?',
+      html: `Delete <strong>${account.name}</strong>? This action cannot be undone.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) handleDelete(id);
+    });
   };
 
-  const handleAdd = () => {
-    setFormData({ id: null, name: "", username: "", password: "", role: "", email: "", status: "Active", userType: "User" });
-    onOpen();
-  };
-
+  const handleEdit = (account) => { setFormData(account); onOpen(); };
+  const handleAdd = () => { setFormData({ id: null, name: "", username: "", password: "", role: "", email: "", status: "Active", userType: "User" }); onOpen(); };
   const handleSave = () => {
     if (formData.id) {
       setAccounts(accounts.map(a => a.id === formData.id ? formData : a));
@@ -115,7 +111,7 @@ export default function Accounts() {
       {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={6} gap={6}>
         <Box fontSize="xl" fontWeight="bold">Accounts</Box>
-        <Box display="flex" align="center" gap={3} justifyContent="flex-end" flex="1">
+        <Box display="flex" alignItems="center" gap={3} justifyContent="flex-end" flex="1">
           <Button colorScheme="blue" onClick={handleAdd} w="150px">+ Add Account</Button>
           <InputGroup maxW="500px" flex="1">
             <InputLeftElement pointerEvents="none"><SearchIcon color="gray.400" /></InputLeftElement>
@@ -202,26 +198,6 @@ export default function Accounts() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      {/* Delete Confirmation */}
-      <AlertDialog
-        isOpen={deleteId !== null}
-        leastDestructiveRef={cancelRef}
-        onClose={() => setDeleteId(null)}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">Delete Account</AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure you want to delete this account? This action cannot be undone.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={() => setDeleteId(null)}>Cancel</Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>Delete</Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
     </Box>
   );
 }

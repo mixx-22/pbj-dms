@@ -1,7 +1,8 @@
 // src/pages/DocumentListPage.jsx
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+import Swal from "sweetalert2";
 import {
   Box,
   Button,
@@ -20,12 +21,6 @@ import {
   Flex,
   Text,
   useToast,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -52,8 +47,6 @@ export default function Documents() {
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [deleteId, setDeleteId] = useState(null);
-  const cancelRef = useRef();
 
   // Add/Edit Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,12 +89,31 @@ export default function Documents() {
     }
   };
 
-  const confirmDelete = (id) => setDeleteId(id);
-  const handleDelete = () => {
-    const docToDelete = documents.find(d => d.id === deleteId);
-    setDocuments(documents.filter(d => d.id !== deleteId));
-    toast({ title: "Document deleted", description: `${docToDelete.title} has been removed.`, status: "success", duration: 3000, isClosable: true });
-    setDeleteId(null);
+  // SweetAlert2 Delete
+  const handleDelete = (id) => {
+    const docToDelete = documents.find(d => d.id === id);
+    setDocuments(documents.filter(d => d.id !== id));
+    toast({
+      title: "Document deleted",
+      description: `${docToDelete.title} has been removed.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const confirmDelete = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) handleDelete(id);
+    });
   };
 
   // Drag & Drop
@@ -118,6 +130,7 @@ export default function Documents() {
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
 
+  // Modal Handlers
   const openAddModal = () => {
     setCurrentDoc({ id: null, title: "", author: "", status: "In Progress", fileName: "", fileUrl: "", size: "" });
     setIsModalOpen(true);
@@ -193,20 +206,6 @@ export default function Documents() {
         </Table>
       </Box>
 
-      {/* Delete Confirmation */}
-      <AlertDialog isOpen={deleteId !== null} leastDestructiveRef={cancelRef} onClose={() => setDeleteId(null)}>
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">Delete Document</AlertDialogHeader>
-            <AlertDialogBody>Are you sure you want to delete this document? This action cannot be undone.</AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={() => setDeleteId(null)}>Cancel</Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>Delete</Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-
       {/* Add/Edit Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalOverlay />
@@ -232,7 +231,15 @@ export default function Documents() {
             </FormControl>
             <FormControl mb={3}>
               <FormLabel>File</FormLabel>
-              <Box {...getRootProps()} border="2px dashed gray" borderRadius="md" p={4} textAlign="center" cursor="pointer" bg={isDragActive ? "gray.100" : "transparent"}>
+              <Box
+                {...getRootProps()}
+                border="2px dashed gray"
+                borderRadius="md"
+                p={4}
+                textAlign="center"
+                cursor="pointer"
+                bg={isDragActive ? "gray.100" : "transparent"}
+              >
                 <input {...getInputProps()} />
                 {currentDoc.fileName ? (
                   <Text>{currentDoc.fileName} ({currentDoc.size})</Text>
