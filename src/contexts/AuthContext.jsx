@@ -14,18 +14,21 @@ export function AuthProvider({ children }) {
       userType: "admin",
     },
     {
+      id: 1,
       name: "Mike Jimenez",
       username: "mike",
       password: "123",
       userType: "admin",
     },
     {
+      id: 2,
       name: "Ajad Singh Parmar",
       username: "ajad",
       password: "123",
       userType: "admin",
     },
     {
+      id: 3,
       name: "Aristotle Bataan",
       username: "docyummy",
       password: "123",

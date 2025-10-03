@@ -193,7 +193,9 @@ export default function App() {
                           </VStack>
                         }
                       >
-                        <MenuItem onClick={onProfileOpen}>Profile</MenuItem>
+                        <MenuItem onClick={onProfileOpen}>
+                          View Profile
+                        </MenuItem>
                         <MenuItem>Settings</MenuItem>
                       </MenuGroup>
                       <MenuDivider />
