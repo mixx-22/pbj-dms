@@ -12,6 +12,8 @@ export default function HomePage() {
     { id: 1, title: "Proposal Report", status: "Approved", dateAdded: "2025-10-01" },
     { id: 2, title: "Marketing Plan", status: "Pending", dateAdded: "2025-09-28" },
     { id: 3, title: "Financial Analysis", status: "Rejected", dateAdded: "2025-09-25" },
+    { id: 4, title: "Company Objectives", status: "Approved", dateAdded: "10/15/2020" },
+    { id: 5, title: "Production Procedures", status: "Approved", dateAdded: "11/15/2020" },
   ];
 
   const accounts = [

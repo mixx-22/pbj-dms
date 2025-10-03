@@ -1,5 +1,5 @@
 // src/pages/AccountListPage.jsx
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -27,11 +27,19 @@ import {
   InputGroup,
   InputLeftElement,
   useToast,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
 
 export default function Accounts() {
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isPwdOpen, onOpen: onPwdOpen, onClose: onPwdClose } = useDisclosure();
 
   const [accounts, setAccounts] = useState([
     { id: 1, name: "Mike Jimenez", username: "mike", role: "Product Designer", email: "mjimenez@pbj.com", status: "Active", userType: "Admin" },
@@ -40,20 +48,23 @@ export default function Accounts() {
     { id: 4, name: "Rhoy Sampaga", username: "Rhoy", role: "Accounting Manager", email: "rsampaga@pbj.com", status: "Inactive", userType: "User" },
   ]);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isPwdOpen, onOpen: onPwdOpen, onClose: onPwdClose } = useDisclosure();
-
   const [formData, setFormData] = useState({ id: null, name: "", username: "", password: "", role: "", email: "", status: "Active", userType: "User" });
   const [passwordData, setPasswordData] = useState({ newPassword: "", confirmPassword: "" });
   const [search, setSearch] = useState("");
 
+  const [deleteId, setDeleteId] = useState(null); // For confirmation dialog
+  const cancelRef = useRef();
+
   const handleChange = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
   const handlePwdChange = (field, value) => setPasswordData(prev => ({ ...prev, [field]: value }));
 
-  const handleDelete = (id) => {
-    const accountToDelete = accounts.find(a => a.id === id);
-    setAccounts(accounts.filter(a => a.id !== id));
+  const confirmDelete = (id) => setDeleteId(id);
+
+  const handleDelete = () => {
+    const accountToDelete = accounts.find(a => a.id === deleteId);
+    setAccounts(accounts.filter(a => a.id !== deleteId));
     toast({ title: "Account deleted", description: `${accountToDelete.name} has been removed.`, status: "success", duration: 3000, isClosable: true });
+    setDeleteId(null);
   };
 
   const handleEdit = (account) => {
@@ -145,7 +156,7 @@ export default function Accounts() {
                 <Td textAlign="right">
                   <IconButton aria-label="Edit" icon={<EditIcon />} size="sm" mr={2} onClick={() => handleEdit(acc)} />
                   <IconButton aria-label="Change Password" icon={<LockIcon />} size="sm" mr={2} onClick={onPwdOpen} />
-                  <IconButton aria-label="Delete" icon={<DeleteIcon />} size="sm" colorScheme="red" onClick={() => handleDelete(acc.id)} />
+                  <IconButton aria-label="Delete" icon={<DeleteIcon />} size="sm" colorScheme="red" onClick={() => confirmDelete(acc.id)} />
                 </Td>
               </Tr>
             ))}
@@ -191,6 +202,26 @@ export default function Accounts() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      {/* Delete Confirmation */}
+      <AlertDialog
+        isOpen={deleteId !== null}
+        leastDestructiveRef={cancelRef}
+        onClose={() => setDeleteId(null)}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">Delete Account</AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure you want to delete this account? This action cannot be undone.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={() => setDeleteId(null)}>Cancel</Button>
+              <Button colorScheme="red" onClick={handleDelete} ml={3}>Delete</Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 }

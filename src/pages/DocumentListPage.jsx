@@ -1,5 +1,5 @@
 // src/pages/DocumentListPage.jsx
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -18,6 +18,12 @@ import {
   Flex,
   Text,
   useToast,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, ViewIcon, SearchIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
@@ -63,7 +69,7 @@ export default function Documents() {
       dateCreated: "11/02/2023",
       lastUpdated: "13 hrs ago • Ajad Parmar",
     },
-    {
+     {
       id: 4,
       title: "Company Objectives",
       author: "Mike Jimenez",
@@ -90,18 +96,10 @@ export default function Documents() {
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleDelete = (id) => {
-    const docToDelete = documents.find((d) => d.id === id);
-    setDocuments(documents.filter((d) => d.id !== id));
-    toast({
-      title: "Document deleted",
-      description: `${docToDelete.title} has been removed.`,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+  
+  // AlertDialog state
+  const [deleteId, setDeleteId] = useState(null);
+  const cancelRef = useRef();
 
   const filteredDocuments = documents.filter(
     (doc) =>
@@ -122,14 +120,11 @@ export default function Documents() {
     }
   };
 
-  // NEW: Handle viewing files (PDF opens in-browser, DOC/DOCX triggers download)
   const handleView = (fileUrl) => {
     const ext = fileUrl.split(".").pop().toLowerCase();
-
     if (ext === "pdf") {
       window.open(fileUrl, "_blank");
-    } else if (ext === "doc" || ext === "docx") {
-      // Fallback: download the file
+    } else {
       const link = document.createElement("a");
       link.href = fileUrl;
       link.target = "_blank";
@@ -137,18 +132,29 @@ export default function Documents() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    } else {
-      window.open(fileUrl, "_blank");
     }
+  };
+
+  const confirmDelete = (id) => setDeleteId(id);
+
+  const handleDelete = () => {
+    const docToDelete = documents.find((d) => d.id === deleteId);
+    setDocuments(documents.filter((d) => d.id !== deleteId));
+    toast({
+      title: "Document deleted",
+      description: `${docToDelete.title} has been removed.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    setDeleteId(null);
   };
 
   return (
     <Box p={6}>
       {/* Header Section */}
       <Flex justify="space-between" align="center" mb={6} flexWrap="wrap" gap={3}>
-        <Box fontSize="xl" fontWeight="bold">
-          Documents
-        </Box>
+        <Box fontSize="xl" fontWeight="bold">Documents</Box>
         <Flex align="center" gap={3} justifyContent="flex-end" flex="1">
           <Button colorScheme="blue" onClick={() => navigate("/documents/new")} w="200px">
             + Create Document
@@ -186,22 +192,12 @@ export default function Documents() {
                 <Tr key={doc.id} _hover={{ bg: "gray.50" }}>
                   <Td>
                     <Flex align="center" gap={3}>
-                      <Box
-                        bg="red.100"
-                        color="red.600"
-                        px={2}
-                        py={1}
-                        borderRadius="md"
-                        fontSize="xs"
-                        fontWeight="bold"
-                      >
+                      <Box bg="red.100" color="red.600" px={2} py={1} borderRadius="md" fontSize="xs" fontWeight="bold">
                         {doc.fileName.split(".").pop().toUpperCase()}
                       </Box>
                       <Box>
                         <Box fontWeight="medium">{doc.title}</Box>
-                        <Text fontSize="sm" color="gray.500">
-                          {doc.size}
-                        </Text>
+                        <Text fontSize="sm" color="gray.500">{doc.size}</Text>
                       </Box>
                     </Flex>
                   </Td>
@@ -239,7 +235,7 @@ export default function Documents() {
                       icon={<DeleteIcon />}
                       size="sm"
                       colorScheme="red"
-                      onClick={() => handleDelete(doc.id)}
+                      onClick={() => confirmDelete(doc.id)}
                     />
                   </Td>
                 </Tr>
@@ -254,6 +250,32 @@ export default function Documents() {
           </Tbody>
         </Table>
       </Box>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog
+        isOpen={deleteId !== null}
+        leastDestructiveRef={cancelRef}
+        onClose={() => setDeleteId(null)}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Document
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure you want to delete this document? This action cannot be undone.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={() => setDeleteId(null)}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 }
