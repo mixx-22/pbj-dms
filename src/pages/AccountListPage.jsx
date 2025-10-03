@@ -29,6 +29,14 @@ import {
   InputLeftElement,
   useToast,
   Container,
+  Stack,
+  TableContainer,
+  Card,
+  CardBody,
+  ButtonGroup,
+  Heading,
+  Flex,
+  Text,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
 
@@ -212,26 +220,22 @@ export default function Accounts() {
   return (
     <Container p={[1, 2, 2, 8]} maxW="container.xl" mx="auto">
       {/* Header */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={6}
-        gap={6}
-      >
-        <Box fontSize="xl" fontWeight="bold">
-          Accounts
-        </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          gap={3}
-          justifyContent="flex-end"
-          flex="1"
-        >
-          <Button colorScheme="purple" onClick={handleAdd} w="150px">
-            + Add Account
-          </Button>
+
+      <Stack spacing={4}>
+        <Stack w="full" spacing={1}>
+          <Text
+            fontSize="2xs"
+            opacity={0.8}
+            textTransform="uppercase"
+            letterSpacing={1}
+          >
+            You are viewing
+          </Text>
+          <Heading size="md" fontWeight="bold">
+            Accounts
+          </Heading>
+        </Stack>
+        <Flex justify="space-between" align="center" mb={6} gap={3}>
           <InputGroup maxW="500px" flex="1">
             <InputLeftElement pointerEvents="none">
               <SearchIcon color="gray.400" />
@@ -242,78 +246,92 @@ export default function Accounts() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </InputGroup>
-        </Box>
-      </Box>
+          <Button colorScheme="purple" onClick={handleAdd} w="200px">
+            + Add Account
+          </Button>
+        </Flex>
+      </Stack>
 
       {/* Table */}
-      <Box overflowX="auto">
-        <Table variant="simple" size="md">
-          <Thead bg="gray.50">
-            <Tr>
-              <Th>Name</Th>
-              <Th>Status</Th>
-              <Th>Role</Th>
-              <Th>Email</Th>
-              <Th>User Type</Th>
-              <Th textAlign="right">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {filteredAccounts.map((acc) => (
-              <Tr key={acc.id} _hover={{ bg: "gray.50" }}>
-                <Td>
-                  <Box display="flex" alignItems="center">
-                    <Avatar size="sm" name={acc.name} mr={3} />
-                    <Box>
-                      <Box fontWeight="semibold">{acc.name}</Box>
-                      <Box fontSize="sm" color="gray.500">
-                        @{acc.username}
+      <Card>
+        <CardBody p={0}>
+          <TableContainer>
+            <Table variant="simple" size="md">
+              <Thead bg="purple.50">
+                <Tr>
+                  <Th>Name</Th>
+                  <Th>Status</Th>
+                  <Th>Role</Th>
+                  <Th>Email</Th>
+                  <Th textAlign="right">User Type</Th>
+                  <Th textAlign="right">Actions</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {filteredAccounts.map((acc) => (
+                  <Tr key={acc.id} _hover={{ bg: "gray.50" }}>
+                    <Td>
+                      <Box display="flex" alignItems="center">
+                        <Avatar size="sm" name={acc.name} mr={3} />
+                        <Box>
+                          <Box fontWeight="semibold">{acc.name}</Box>
+                          <Box fontSize="sm" color="gray.500">
+                            @{acc.username}
+                          </Box>
+                        </Box>
                       </Box>
-                    </Box>
-                  </Box>
-                </Td>
-                <Td>
-                  <Badge colorScheme={getStatusColor(acc.status)}>
-                    {acc.status}
-                  </Badge>
-                </Td>
-                <Td>{acc.role}</Td>
-                <Td>{acc.email}</Td>
-                <Td>
-                  <Badge
-                    colorScheme={acc.userType === "Admin" ? "purple" : "blue"}
-                  >
-                    {acc.userType}
-                  </Badge>
-                </Td>
-                <Td textAlign="right">
-                  <IconButton
-                    aria-label="Edit"
-                    icon={<EditIcon />}
-                    size="sm"
-                    mr={2}
-                    onClick={() => handleEdit(acc)}
-                  />
-                  <IconButton
-                    aria-label="Change Password"
-                    icon={<LockIcon />}
-                    size="sm"
-                    mr={2}
-                    onClick={onPwdOpen}
-                  />
-                  <IconButton
-                    aria-label="Delete"
-                    icon={<DeleteIcon />}
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => confirmDelete(acc.id)}
-                  />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
+                    </Td>
+                    <Td>
+                      <Badge colorScheme={getStatusColor(acc.status)}>
+                        {acc.status}
+                      </Badge>
+                    </Td>
+                    <Td>{acc.role}</Td>
+                    <Td>{acc.email}</Td>
+                    <Td textAlign="right">
+                      <Badge
+                        colorScheme={
+                          acc.userType === "Admin" ? "purple" : "blue"
+                        }
+                      >
+                        {acc.userType}
+                      </Badge>
+                    </Td>
+                    <Td textAlign="right">
+                      <ButtonGroup spacing={2}>
+                        <IconButton
+                          aria-label="Edit"
+                          icon={<EditIcon />}
+                          size="sm"
+                          colorScheme="green"
+                          variant="outline"
+                          onClick={() => handleEdit(acc)}
+                        />
+                        <IconButton
+                          aria-label="Change Password"
+                          icon={<LockIcon />}
+                          size="sm"
+                          colorScheme="purple"
+                          variant="outline"
+                          onClick={onPwdOpen}
+                        />
+                        <IconButton
+                          aria-label="Delete"
+                          icon={<DeleteIcon />}
+                          size="sm"
+                          colorScheme="red"
+                          variant="outline"
+                          onClick={() => confirmDelete(acc.id)}
+                        />
+                      </ButtonGroup>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </CardBody>
+      </Card>
 
       {/* Add/Edit Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
