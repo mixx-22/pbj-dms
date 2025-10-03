@@ -7,10 +7,30 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   const users = [
-    { username: "admin", password: "123", userType: "admin" },
-    { username: "mike", password: "123", userType: "admin" },
-    { username: "ajad", password: "123", userType: "admin" },
-    { username: "docyummy", password: "123", userType: "user" },
+    {
+      name: "System Administrator",
+      username: "admin",
+      password: "123",
+      userType: "admin",
+    },
+    {
+      name: "Mike Jimenez",
+      username: "mike",
+      password: "123",
+      userType: "admin",
+    },
+    {
+      name: "Ajad Singh Parmar",
+      username: "ajad",
+      password: "123",
+      userType: "admin",
+    },
+    {
+      name: "Aristotle Bataan",
+      username: "docyummy",
+      password: "123",
+      userType: "user",
+    },
   ];
 
   const login = (username, password) => {
