@@ -51,14 +51,48 @@ export default function App() {
 
   // Accounts data
   const [accounts, setAccounts] = useState([
-    { id: 1, name: "Mike Jimenez", username: "mike", role: "Product Designer", email: "mjimenez@pbj.com", status: "Active", userType: "Admin" },
-    { id: 2, name: "Ajad Singh Parmar", username: "Ajad", role: "Product Manager", email: "aparmar@pbj.com", status: "Active", userType: "Admin" },
-    { id: 3, name: "Aristotle Bataan", username: "docyummy", role: "Product Supervisor", email: "abataan@pbj.com", status: "Active", userType: "User" },
-    { id: 4, name: "Rhoy Sampaga", username: "Rhoy", role: "Accounting Manager", email: "rsampaga@pbj.com", status: "Inactive", userType: "User" },
+    {
+      id: 1,
+      name: "Mike Jimenez",
+      username: "mike",
+      role: "Product Designer",
+      email: "mjimenez@pbj.com",
+      status: "Active",
+      userType: "Admin",
+    },
+    {
+      id: 2,
+      name: "Ajad Singh Parmar",
+      username: "Ajad",
+      role: "Product Manager",
+      email: "aparmar@pbj.com",
+      status: "Active",
+      userType: "Admin",
+    },
+    {
+      id: 3,
+      name: "Aristotle Bataan",
+      username: "docyummy",
+      role: "Product Supervisor",
+      email: "abataan@pbj.com",
+      status: "Active",
+      userType: "User",
+    },
+    {
+      id: 4,
+      name: "Rhoy Sampaga",
+      username: "Rhoy",
+      role: "Accounting Manager",
+      email: "rsampaga@pbj.com",
+      status: "Inactive",
+      userType: "User",
+    },
   ]);
 
   // Find logged-in user account
-  const loggedInUserAccount = accounts.find(a => a.username === user?.username);
+  const loggedInUserAccount = accounts.find(
+    (a) => a.username === user?.username
+  );
 
   // Active link styling helper
   const getButtonVariant = (path) =>
@@ -69,7 +103,8 @@ export default function App() {
     { name: "Home", to: "/" },
     { name: "Documents", to: "/documents" },
   ];
-  if (user?.userType === "admin") links.push({ name: "Accounts", to: "/accounts" });
+  if (user?.userType === "admin")
+    links.push({ name: "Accounts", to: "/accounts" });
 
   // Update account info
   const handleProfileSave = (updatedAccount) => {
@@ -83,81 +118,84 @@ export default function App() {
     <Box>
       {/* Navbar */}
       {!hideNav && (
-        <Flex
-          bg="white"
-          borderBottom="1px solid"
-          borderColor="gray.200"
-          p={4}
-          align="center"
-          justify="space-between"
-        >
-          <Box fontWeight="bold" fontSize="xl">
-            PBJ
-          </Box>
+        <Box bg="white" borderBottom="1px solid" borderColor="gray.200">
+          <Box w="full" maxW="container.xl" mx="auto">
+            <Flex
+              w="full"
+              alignItems="center"
+              justifyContent="space-between"
+              py={4}
+              px={8}
+            >
+              <Box fontWeight="bold" fontSize="xl">
+                PBJ
+              </Box>
 
-          {/* Desktop links */}
-          <HStack spacing={4} display={{ base: "none", md: "flex" }}>
-            {links.map((link) => (
-              <Button
-                key={link.to}
-                as={Link}
-                to={link.to}
-                variant={getButtonVariant(link.to)}
-              >
-                {link.name}
-              </Button>
-            ))}
-          </HStack>
+              {/* Desktop links */}
+              <HStack spacing={4} display={{ base: "none", md: "flex" }}>
+                {links.map((link) => (
+                  <Button
+                    key={link.to}
+                    as={Link}
+                    to={link.to}
+                    variant={getButtonVariant(link.to)}
+                  >
+                    {link.name}
+                  </Button>
+                ))}
+              </HStack>
 
-          {/* Mobile Hamburger */}
-          <IconButton
-            icon={<HamburgerIcon />}
-            display={{ base: "flex", md: "none" }}
-            aria-label="Menu"
-            onClick={onOpen}
-          />
+              {/* Mobile Hamburger */}
+              <IconButton
+                icon={<HamburgerIcon />}
+                display={{ base: "flex", md: "none" }}
+                aria-label="Menu"
+                onClick={onOpen}
+              />
 
-          {/* User Menu */}
-          {user ? (
-            <>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rightIcon={<ChevronDownIcon />}
-                  variant="ghost"
-                >
-                  <Avatar size="sm" name={user.name} />
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>
-                    <VStack align="start" spacing={0}>
-                      <Text fontWeight="bold">{user.name}</Text>
-                      <Text fontSize="sm" color="gray.500">
-                        @{user.username}
-                      </Text>
-                    </VStack>
-                  </MenuItem>
-                  <MenuItem onClick={onProfileOpen}>Profile</MenuItem>
-                  <MenuItem>Settings</MenuItem>
-                  <MenuItem onClick={logout}>Log Out</MenuItem>
-                </MenuList>
-              </Menu>
+              {/* User Menu */}
+              {user ? (
+                <>
+                  <Menu>
+                    <MenuButton
+                      as={Button}
+                      rightIcon={<ChevronDownIcon />}
+                      variant="ghost"
+                    >
+                      <Avatar size="sm" name={user.name} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem>
+                        <VStack align="start" spacing={0}>
+                          <Text fontWeight="bold">{user.name}</Text>
+                          <Text fontSize="sm" color="gray.500">
+                            @{user.username}
+                          </Text>
+                        </VStack>
+                      </MenuItem>
+                      <MenuItem onClick={onProfileOpen}>Profile</MenuItem>
+                      <MenuItem>Settings</MenuItem>
+                      <MenuItem onClick={logout}>Log Out</MenuItem>
+                    </MenuList>
+                  </Menu>
 
-              {loggedInUserAccount && (
-                <ProfileModal
-                  isOpen={isProfileOpen}
-                  onClose={onProfileClose}
-                  account={loggedInUserAccount}
-                  onSave={handleProfileSave}
-                />
+                  {loggedInUserAccount && (
+                    <ProfileModal
+                      isOpen={isProfileOpen}
+                      onClose={onProfileClose}
+                      account={loggedInUserAccount}
+                      onSave={handleProfileSave}
+                    />
+                  )}
+                </>
+              ) : (
+                <Button as={Link} to="/login" colorScheme="blue">
+                  Log In
+                </Button>
               )}
-            </>
-          ) : (
-            <Button as={Link} to="/login" colorScheme="blue">
-              Log In
-            </Button>
-          )}
-        </Flex>
+            </Flex>
+          </Box>
+        </Box>
       )}
 
       {/* Mobile Drawer */}
