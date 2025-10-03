@@ -249,7 +249,7 @@ export default function App() {
       )}
 
       {/* Content */}
-      <Box p={6} bg="gray.50" minH="calc(100vh - 72px)">
+      <Box bg="gray.50" minH="calc(100vh - 72px)">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route

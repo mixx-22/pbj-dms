@@ -12,6 +12,9 @@ import {
   FormControl,
   FormLabel,
   useToast,
+  Card,
+  CardBody,
+  Stack,
 } from "@chakra-ui/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -56,68 +59,87 @@ export default function LoginPage() {
 
   return (
     <Box
+      p={0}
       minH="100vh"
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bg="gray.50"
-      px={4}
+      bgGradient="linear(to-br, purple.600, purple.900)"
     >
-      <Box maxW="md" w="full" p={8} bg="white" borderRadius="lg" shadow="lg">
-        <Heading mb={6} textAlign="center" color="purple.600">
-          Welcome!
-        </Heading>
-        <VStack spacing={4} align="stretch">
-          <FormControl>
-            <FormLabel>Username</FormLabel>
-            <Input
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-          </FormControl>
+      <Card w="full" maxW="md" mx={"auto"}>
+        <CardBody py={8}>
+          <Stack spacing={0} alignItems="center">
+            <Heading m={0} fontSize="sm" color="purple.600">
+              PBJ
+              <Heading fontSize="inherit" as="span" color="yellow.400">
+                Automations
+              </Heading>
+            </Heading>
+            <Heading
+              m={0}
+              color="purple.600"
+              fontWeight="extrabold"
+              fontSize="4xl"
+              lineHeight={7}
+            >
+              DOCS
+            </Heading>
+          </Stack>
+          <Heading my={6} textAlign="center" size="sm">
+            Welcome to DOCS!
+          </Heading>
+          <VStack spacing={4} align="stretch">
+            <FormControl>
+              <FormLabel>Username</FormLabel>
+              <Input
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+            </FormControl>
 
-          <FormControl>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-          </FormControl>
+            <FormControl>
+              <FormLabel>Password</FormLabel>
+              <Input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+            </FormControl>
 
-          {error && (
-            <Alert status="error" borderRadius="md">
-              <AlertIcon />
-              {error}
-            </Alert>
-          )}
+            {error && (
+              <Alert status="error" borderRadius="md">
+                <AlertIcon />
+                {error}
+              </Alert>
+            )}
 
-          <Button
-            colorScheme="purple"
-            w="full"
-            onClick={handleLogin}
-            isLoading={loading}
-            loadingText="Signing In"
-          >
-            Sign In
-          </Button>
+            <Button
+              colorScheme="purple"
+              w="full"
+              onClick={handleLogin}
+              isLoading={loading}
+              loadingText="Signing In"
+            >
+              Sign In
+            </Button>
 
-          <Text
-            fontSize="sm"
-            color="purple.600"
-            textAlign="center"
-            cursor="pointer"
-            onClick={handleForgotPassword}
-            _hover={{ textDecoration: "underline" }}
-          >
-            Forgot Password?
-          </Text>
-        </VStack>
-      </Box>
+            <Text
+              fontSize="sm"
+              color="purple.600"
+              textAlign="center"
+              cursor="pointer"
+              onClick={handleForgotPassword}
+              _hover={{ textDecoration: "underline" }}
+            >
+              Forgot Password?
+            </Text>
+          </VStack>
+        </CardBody>
+      </Card>
     </Box>
   );
 }
