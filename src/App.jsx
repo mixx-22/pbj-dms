@@ -24,6 +24,8 @@ import {
   Stack,
   MenuDivider,
   MenuGroup,
+  ButtonGroup,
+  Hide,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
 
@@ -99,8 +101,7 @@ export default function App() {
   );
 
   // Active link styling helper
-  const getButtonVariant = (path) =>
-    location.pathname === path ? "solid" : "ghost";
+  const getButtonVariant = (path) => location.pathname === path;
 
   // Navbar links
   const links = [
@@ -150,18 +151,25 @@ export default function App() {
               </Stack>
 
               {/* Desktop links */}
-              <HStack spacing={4} display={{ base: "none", md: "flex" }}>
-                {links.map((link) => (
-                  <Button
-                    key={link.to}
-                    as={Link}
-                    to={link.to}
-                    variant={getButtonVariant(link.to)}
-                  >
-                    {link.name}
-                  </Button>
-                ))}
-              </HStack>
+              <Hide below={"md"}>
+                <ButtonGroup spacing={2}>
+                  {links.map((link) => (
+                    <Button
+                      as={Link}
+                      to={link.to}
+                      key={link.to}
+                      colorScheme="yellow"
+                      color="yellow.300"
+                      variant="ghost"
+                      isActive={getButtonVariant(link.to)}
+                      _hover={{ bg: "yellow.50", color: "purple.600" }}
+                      _active={{ bg: "yellow.300", color: "purple.600" }}
+                    >
+                      {link.name}
+                    </Button>
+                  ))}
+                </ButtonGroup>
+              </Hide>
 
               {/* Mobile Hamburger */}
               <IconButton
