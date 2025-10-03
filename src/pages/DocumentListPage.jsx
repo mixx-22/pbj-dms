@@ -30,6 +30,7 @@ import {
   FormControl,
   FormLabel,
   Select,
+  Container,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, ViewIcon, SearchIcon } from "@chakra-ui/icons";
 
@@ -251,7 +252,7 @@ export default function Documents() {
   };
 
   return (
-    <Box p={6}>
+    <Container p={[1, 2, 2, 8]} maxW="container.xl" mx="auto">
       {/* Header */}
       <Flex
         justify="space-between"
@@ -454,6 +455,6 @@ export default function Documents() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </Container>
   );
 }

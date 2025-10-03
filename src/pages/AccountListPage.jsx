@@ -28,6 +28,7 @@ import {
   InputGroup,
   InputLeftElement,
   useToast,
+  Container,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
 
@@ -209,7 +210,7 @@ export default function Accounts() {
   );
 
   return (
-    <Box p={6}>
+    <Container p={[1, 2, 2, 8]} maxW="container.xl" mx="auto">
       {/* Header */}
       <Box
         display="flex"
@@ -433,6 +434,6 @@ export default function Accounts() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </Container>
   );
 }
