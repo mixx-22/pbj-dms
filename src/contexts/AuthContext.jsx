@@ -5,10 +5,19 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  const users = [
+    { username: "admin", password: "123", userType: "admin" },
+    { username: "mike", password: "123", userType: "admin" },
+    { username: "ajad", password: "123", userType: "admin" },
+    { username: "aristotle", password: "123", userType: "user" },
+  ];
+
   const login = (username, password) => {
-    // dummy login
-    if (username === "admin" && password === "123") {
-      setUser({ name: "Admin User" });
+    const foundUser = users.find(
+      (u) => u.username === username && u.password === password
+    );
+    if (foundUser) {
+      setUser(foundUser);
       return true;
     }
     return false;

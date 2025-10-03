@@ -1,3 +1,4 @@
+// src/pages/LoginPage.jsx
 import { useState } from "react";
 import {
   Box,
@@ -8,9 +9,9 @@ import {
   Text,
   Alert,
   AlertIcon,
-  Spinner,
   FormControl,
   FormLabel,
+  useToast,
 } from "@chakra-ui/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,9 +35,19 @@ export default function LoginPage() {
       if (success) {
         navigate("/");
       } else {
-        setError("Invalid credentials. Try admin / 123.");
+        setError("Invalid credentials.");
       }
-    }, 800); // fake delay
+    }, 800);
+  };
+
+  const handleForgotPassword = () => {
+    toast({
+      title: "Forgot Password",
+      description: "Password reset feature is not implemented yet.",
+      status: "info",
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   const handleKeyDown = (e) => {
@@ -51,14 +63,7 @@ export default function LoginPage() {
       bg="gray.50"
       px={4}
     >
-      <Box
-        maxW="md"
-        w="full"
-        p={8}
-        bg="white"
-        borderRadius="lg"
-        shadow="lg"
-      >
+      <Box maxW="md" w="full" p={8} bg="white" borderRadius="lg" shadow="lg">
         <Heading mb={6} textAlign="center" color="teal.600">
           Login
         </Heading>
@@ -72,6 +77,7 @@ export default function LoginPage() {
               onKeyDown={handleKeyDown}
             />
           </FormControl>
+
           <FormControl>
             <FormLabel>Password</FormLabel>
             <Input
@@ -100,8 +106,15 @@ export default function LoginPage() {
             Sign In
           </Button>
 
-          <Text fontSize="sm" color="gray.500" textAlign="center">
-            Demo credentials: <b>admin / 123</b>
+          <Text
+            fontSize="sm"
+            color="teal.600"
+            textAlign="center"
+            cursor="pointer"
+            onClick={handleForgotPassword}
+            _hover={{ textDecoration: "underline" }}
+          >
+            Forgot Password?
           </Text>
         </VStack>
       </Box>

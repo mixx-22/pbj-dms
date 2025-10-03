@@ -31,34 +31,61 @@ export default function Documents() {
       id: 1,
       title: "Proposal Report",
       author: "Mike Jimenez",
+      username: "mike",
       status: "In Progress",
       fileName: "proposal.pdf",
       fileUrl: "/files/proposal.pdf",
       size: "1.2 MB",
       dateCreated: "02/17/2024",
-      lastUpdated: "2 hrs ago • Ava Wilson",
+      lastUpdated: "2 hrs ago • Ajad Parmar",
     },
     {
       id: 2,
       title: "Marketing Plan",
-      author: "Ajad Singh Parmar",
+      author: "Ajad Parmar",
+      username: "ajad",
       status: "Approved",
       fileName: "marketing-plan.pdf",
       fileUrl: "/files/marketing-plan.pdf",
       size: "3.0 MB",
       dateCreated: "03/19/2024",
-      lastUpdated: "1 hr ago • Sophia Martinez",
+      lastUpdated: "1 hr ago • Ajad Parmar",
     },
     {
       id: 3,
       title: "Financial Analysis",
       author: "Rhoy Sampaga",
+      username: "aristotle",
       status: "Rejected",
-      fileName: "financial-report.pdf",
-      fileUrl: "/files/financial-report.pdf",
+      fileName: "financial-report.docx",
+      fileUrl: "/files/financial-report.docx",
       size: "2.8 MB",
       dateCreated: "11/02/2023",
-      lastUpdated: "13 hrs ago • Daniel Lewis",
+      lastUpdated: "13 hrs ago • Ajad Parmar",
+    },
+    {
+      id: 4,
+      title: "Company Objectives",
+      author: "Mike Jimenez",
+      username: "mike",
+      status: "Approved",
+      fileName: "company-objectives.doc",
+      fileUrl: "/files/company-objectives.doc",
+      size: "2.8 MB",
+      dateCreated: "10/15/2020",
+      lastUpdated: "13 hrs ago • Mike Jimenez",
+    },
+    {
+      id: 5,
+      title: "Production Procedures",
+      author: "Ajad Parmar",
+      username: "ajad",
+      status: "Approved",
+      fileName: "production-procedures.pdf",
+      fileUrl: "/files/production-procedures.pdf",
+      size: "2.8 MB",
+      dateCreated: "11/15/2020",
+      lastUpdated: "10 hrs ago • Aristotle Bataan",
     },
   ]);
 
@@ -95,6 +122,26 @@ export default function Documents() {
     }
   };
 
+  // NEW: Handle viewing files (PDF opens in-browser, DOC/DOCX triggers download)
+  const handleView = (fileUrl) => {
+    const ext = fileUrl.split(".").pop().toLowerCase();
+
+    if (ext === "pdf") {
+      window.open(fileUrl, "_blank");
+    } else if (ext === "doc" || ext === "docx") {
+      // Fallback: download the file
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.target = "_blank";
+      link.download = fileUrl.split("/").pop();
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      window.open(fileUrl, "_blank");
+    }
+  };
+
   return (
     <Box p={6}>
       {/* Header Section */}
@@ -119,7 +166,7 @@ export default function Documents() {
         </Flex>
       </Flex>
 
-      {/* Responsive Table */}
+      {/* Documents Table */}
       <Box overflowX="auto">
         <Table variant="simple" size="md">
           <Thead>
@@ -137,7 +184,6 @@ export default function Documents() {
             {filteredDocuments.length > 0 ? (
               filteredDocuments.map((doc) => (
                 <Tr key={doc.id} _hover={{ bg: "gray.50" }}>
-                  {/* File Name */}
                   <Td>
                     <Flex align="center" gap={3}>
                       <Box
@@ -149,7 +195,7 @@ export default function Documents() {
                         fontSize="xs"
                         fontWeight="bold"
                       >
-                        PDF
+                        {doc.fileName.split(".").pop().toUpperCase()}
                       </Box>
                       <Box>
                         <Box fontWeight="medium">{doc.title}</Box>
@@ -159,39 +205,27 @@ export default function Documents() {
                       </Box>
                     </Flex>
                   </Td>
-
-                  {/* Owner */}
                   <Td>
                     <Flex align="center" gap={2}>
                       <Avatar size="sm" name={doc.author} />
                       <Box>{doc.author}</Box>
                     </Flex>
                   </Td>
-
                   <Td>{doc.size}</Td>
                   <Td>{doc.dateCreated}</Td>
                   <Td>{doc.lastUpdated}</Td>
-
-                  {/* Status */}
                   <Td>
-                    <Badge
-                      colorScheme={getStatusColor(doc.status)}
-                      px={2}
-                      py={1}
-                      borderRadius="full"
-                    >
+                    <Badge colorScheme={getStatusColor(doc.status)} px={2} py={1} borderRadius="full">
                       {doc.status}
                     </Badge>
                   </Td>
-
-                  {/* Actions */}
                   <Td textAlign="right">
                     <IconButton
-                      aria-label="View PDF"
+                      aria-label="View Document"
                       icon={<ViewIcon />}
                       size="sm"
                       mr={2}
-                      onClick={() => window.open(doc.fileUrl, "_blank")}
+                      onClick={() => handleView(doc.fileUrl)}
                     />
                     <IconButton
                       aria-label="Edit"
