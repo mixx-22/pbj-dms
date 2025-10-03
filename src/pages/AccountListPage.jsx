@@ -237,7 +237,7 @@ export default function Accounts() {
           >
             You are viewing
           </Text>
-          <Heading size="md" fontWeight="bold">
+          <Heading size="md" fontWeight="bold" color="purple.600">
             Accounts
           </Heading>
         </Stack>

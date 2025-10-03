@@ -277,7 +277,7 @@ export default function Documents() {
           >
             You are viewing
           </Text>
-          <Heading size="md" fontWeight="bold">
+          <Heading size="md" fontWeight="bold" color="purple.600">
             Documents
           </Heading>
         </Stack>
