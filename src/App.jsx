@@ -20,6 +20,10 @@ import {
   DrawerCloseButton,
   DrawerBody,
   VStack,
+  Heading,
+  Stack,
+  MenuDivider,
+  MenuGroup,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
 
@@ -118,7 +122,7 @@ export default function App() {
     <Box>
       {/* Navbar */}
       {!hideNav && (
-        <Box bg="white" borderBottom="1px solid" borderColor="gray.200">
+        <Box bg="purple.600" borderBottom="1px solid" borderColor="purple.700">
           <Box w="full" maxW="container.xl" mx="auto">
             <Flex
               w="full"
@@ -127,9 +131,23 @@ export default function App() {
               py={4}
               px={8}
             >
-              <Box fontWeight="bold" fontSize="xl">
-                PBJ
-              </Box>
+              <Stack spacing={0}>
+                <Heading m={0} fontSize="sm" color="white">
+                  PBJ
+                  <Heading fontSize="inherit" as="span" color="yellow.300">
+                    Automations
+                  </Heading>
+                </Heading>
+                <Heading
+                  m={0}
+                  color="white"
+                  fontWeight="extrabold"
+                  fontSize="4xl"
+                  lineHeight={7}
+                >
+                  DOCS
+                </Heading>
+              </Stack>
 
               {/* Desktop links */}
               <HStack spacing={4} display={{ base: "none", md: "flex" }}>
@@ -152,29 +170,33 @@ export default function App() {
                 aria-label="Menu"
                 onClick={onOpen}
               />
-
               {/* User Menu */}
               {user ? (
                 <>
-                  <Menu>
+                  <Menu isLazy>
                     <MenuButton
                       as={Button}
-                      rightIcon={<ChevronDownIcon />}
                       variant="ghost"
+                      px={0}
+                      borderRadius={"full"}
                     >
                       <Avatar size="sm" name={user.name} />
                     </MenuButton>
                     <MenuList>
-                      <MenuItem>
-                        <VStack align="start" spacing={0}>
-                          <Text fontWeight="bold">{user.name}</Text>
-                          <Text fontSize="sm" color="gray.500">
-                            @{user.username}
-                          </Text>
-                        </VStack>
-                      </MenuItem>
-                      <MenuItem onClick={onProfileOpen}>Profile</MenuItem>
-                      <MenuItem>Settings</MenuItem>
+                      <MenuGroup
+                        title={
+                          <VStack align="start" spacing={0}>
+                            <Text fontWeight="bold">{user.name}</Text>
+                            <Text fontSize="sm" color="gray.500">
+                              @{user.username}
+                            </Text>
+                          </VStack>
+                        }
+                      >
+                        <MenuItem onClick={onProfileOpen}>Profile</MenuItem>
+                        <MenuItem>Settings</MenuItem>
+                      </MenuGroup>
+                      <MenuDivider />
                       <MenuItem onClick={logout}>Log Out</MenuItem>
                     </MenuList>
                   </Menu>
