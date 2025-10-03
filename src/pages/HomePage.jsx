@@ -108,7 +108,7 @@ export default function HomePage() {
               <Heading size="xl" color="blackAlpha.600">
                 Welcome,
               </Heading>
-              <Heading size="2xl" color="teal.600">
+              <Heading size="2xl" color="purple.600">
                 {user.username}!
               </Heading>
             </>
@@ -127,7 +127,7 @@ export default function HomePage() {
           </Text>
         </Box>
         <Button
-          colorScheme="blue"
+          colorScheme="purple"
           onClick={() => navigate("/documents")}
           h="40px"
         >

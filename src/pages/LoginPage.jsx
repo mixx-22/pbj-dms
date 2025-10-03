@@ -64,8 +64,8 @@ export default function LoginPage() {
       px={4}
     >
       <Box maxW="md" w="full" p={8} bg="white" borderRadius="lg" shadow="lg">
-        <Heading mb={6} textAlign="center" color="teal.600">
-          Login
+        <Heading mb={6} textAlign="center" color="purple.600">
+          Welcome!
         </Heading>
         <VStack spacing={4} align="stretch">
           <FormControl>
@@ -97,7 +97,7 @@ export default function LoginPage() {
           )}
 
           <Button
-            colorScheme="teal"
+            colorScheme="purple"
             w="full"
             onClick={handleLogin}
             isLoading={loading}
@@ -108,7 +108,7 @@ export default function LoginPage() {
 
           <Text
             fontSize="sm"
-            color="teal.600"
+            color="purple.600"
             textAlign="center"
             cursor="pointer"
             onClick={handleForgotPassword}
