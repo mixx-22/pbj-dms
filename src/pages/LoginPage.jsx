@@ -9,6 +9,8 @@ import {
   Alert,
   AlertIcon,
   Spinner,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -37,9 +39,7 @@ export default function LoginPage() {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleLogin();
-    }
+    if (e.key === "Enter") handleLogin();
   };
 
   return (
@@ -49,47 +49,60 @@ export default function LoginPage() {
       alignItems="center"
       justifyContent="center"
       bg="gray.50"
+      px={4}
     >
       <Box
-        maxW="sm"
+        maxW="md"
         w="full"
         p={8}
         bg="white"
-        borderWidth="1px"
         borderRadius="lg"
         shadow="lg"
       >
         <Heading mb={6} textAlign="center" color="teal.600">
           Login
         </Heading>
-        <VStack spacing={4}>
-          <Input
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
+        <VStack spacing={4} align="stretch">
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Password</FormLabel>
+            <Input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </FormControl>
+
           {error && (
             <Alert status="error" borderRadius="md">
               <AlertIcon />
               {error}
             </Alert>
           )}
+
           <Button
             colorScheme="teal"
             w="full"
             onClick={handleLogin}
-            isDisabled={loading}
+            isLoading={loading}
+            loadingText="Signing In"
           >
-            {loading ? <Spinner size="sm" /> : "Sign In"}
+            Sign In
           </Button>
+
+          <Text fontSize="sm" color="gray.500" textAlign="center">
+            Demo credentials: <b>admin / 123</b>
+          </Text>
         </VStack>
       </Box>
     </Box>

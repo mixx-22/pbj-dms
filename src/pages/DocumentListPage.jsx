@@ -1,4 +1,4 @@
-// src/pages/Documents.jsx
+// src/pages/DocumentListPage.jsx
 import { useState } from "react";
 import {
   Box,
@@ -17,17 +17,20 @@ import {
   Input,
   Flex,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, ViewIcon, SearchIcon } from "@chakra-ui/icons";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 export default function Documents() {
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const [documents, setDocuments] = useState([
     {
       id: 1,
       title: "Proposal Report",
-      author: "Emily Thompson",
+      author: "Mike Jimenez",
       status: "In Progress",
       fileName: "proposal.pdf",
       fileUrl: "/files/proposal.pdf",
@@ -38,7 +41,7 @@ export default function Documents() {
     {
       id: 2,
       title: "Marketing Plan",
-      author: "Sophia Martinez",
+      author: "Ajad Singh Parmar",
       status: "Approved",
       fileName: "marketing-plan.pdf",
       fileUrl: "/files/marketing-plan.pdf",
@@ -49,7 +52,7 @@ export default function Documents() {
     {
       id: 3,
       title: "Financial Analysis",
-      author: "Daniel Lewis",
+      author: "Rhoy Sampaga",
       status: "Rejected",
       fileName: "financial-report.pdf",
       fileUrl: "/files/financial-report.pdf",
@@ -59,159 +62,164 @@ export default function Documents() {
     },
   ]);
 
-  const [searchQuery, setSearchQuery] = useState(""); // search state
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This document will be deleted permanently!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setDocuments(documents.filter((d) => d.id !== id));
-        Swal.fire("Deleted!", "The document has been removed.", "success");
-      }
+    const docToDelete = documents.find((d) => d.id === id);
+    setDocuments(documents.filter((d) => d.id !== id));
+    toast({
+      title: "Document deleted",
+      description: `${docToDelete.title} has been removed.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
     });
   };
 
-  // filter documents based on search query (title or author)
   const filteredDocuments = documents.filter(
     (doc) =>
       doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       doc.author.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Approved":
+        return "green";
+      case "In Progress":
+        return "yellow";
+      case "Rejected":
+        return "red";
+      default:
+        return "gray";
+    }
+  };
+
   return (
     <Box p={6}>
       {/* Header Section */}
-      <Flex justify="space-between" align="center" mb={6}>
-        <InputGroup maxW="300px">
-          <InputLeftElement pointerEvents="none">
-            <SearchIcon color="gray.400" />
-          </InputLeftElement>
-          <Input
-            placeholder="Search by title or author"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </InputGroup>
-        <Button colorScheme="blue" onClick={() => navigate("/documents/new")}>
-          + Create Document
-        </Button>
+      <Flex justify="space-between" align="center" mb={6} flexWrap="wrap" gap={3}>
+        <Box fontSize="xl" fontWeight="bold">
+          Documents
+        </Box>
+        <Flex align="center" gap={3} justifyContent="flex-end" flex="1">
+          <Button colorScheme="blue" onClick={() => navigate("/documents/new")} w="200px">
+            + Create Document
+          </Button>
+          <InputGroup maxW="500px">
+            <InputLeftElement pointerEvents="none">
+              <SearchIcon color="gray.400" />
+            </InputLeftElement>
+            <Input
+              placeholder="Search by title or owner"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </InputGroup>
+        </Flex>
       </Flex>
 
-      {/* Documents Table */}
-      <Table variant="simple" size="md">
-        <Thead>
-          <Tr>
-            <Th>Name</Th>
-            <Th>Owner</Th>
-            <Th>Size</Th>
-            <Th>Date Created</Th>
-            <Th>Last Updated</Th>
-            <Th>Status</Th>
-            <Th textAlign="right">Action</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {filteredDocuments.length > 0 ? (
-            filteredDocuments.map((doc) => (
-              <Tr key={doc.id} _hover={{ bg: "gray.50" }}>
-                {/* File name */}
-                <Td>
-                  <Flex align="center" gap={3}>
-                    <Box
-                      bg="red.100"
-                      color="red.600"
+      {/* Responsive Table */}
+      <Box overflowX="auto">
+        <Table variant="simple" size="md">
+          <Thead>
+            <Tr>
+              <Th>Name</Th>
+              <Th>Owner</Th>
+              <Th>Size</Th>
+              <Th>Date Created</Th>
+              <Th>Last Updated</Th>
+              <Th>Status</Th>
+              <Th textAlign="right">Action</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {filteredDocuments.length > 0 ? (
+              filteredDocuments.map((doc) => (
+                <Tr key={doc.id} _hover={{ bg: "gray.50" }}>
+                  {/* File Name */}
+                  <Td>
+                    <Flex align="center" gap={3}>
+                      <Box
+                        bg="red.100"
+                        color="red.600"
+                        px={2}
+                        py={1}
+                        borderRadius="md"
+                        fontSize="xs"
+                        fontWeight="bold"
+                      >
+                        PDF
+                      </Box>
+                      <Box>
+                        <Box fontWeight="medium">{doc.title}</Box>
+                        <Text fontSize="sm" color="gray.500">
+                          {doc.size}
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </Td>
+
+                  {/* Owner */}
+                  <Td>
+                    <Flex align="center" gap={2}>
+                      <Avatar size="sm" name={doc.author} />
+                      <Box>{doc.author}</Box>
+                    </Flex>
+                  </Td>
+
+                  <Td>{doc.size}</Td>
+                  <Td>{doc.dateCreated}</Td>
+                  <Td>{doc.lastUpdated}</Td>
+
+                  {/* Status */}
+                  <Td>
+                    <Badge
+                      colorScheme={getStatusColor(doc.status)}
                       px={2}
                       py={1}
-                      borderRadius="md"
-                      fontSize="xs"
-                      fontWeight="bold"
+                      borderRadius="full"
                     >
-                      PDF
-                    </Box>
-                    <Box>
-                      <Box fontWeight="medium">{doc.title}</Box>
-                      <Text fontSize="sm" color="gray.500">
-                        {doc.size}
-                      </Text>
-                    </Box>
-                  </Flex>
-                </Td>
+                      {doc.status}
+                    </Badge>
+                  </Td>
 
-                {/* Owner */}
-                <Td>
-                  <Flex align="center" gap={2}>
-                    <Avatar size="sm" name={doc.author} />
-                    <Box>{doc.author}</Box>
-                  </Flex>
-                </Td>
-
-                <Td>{doc.size}</Td>
-                <Td>{doc.dateCreated}</Td>
-                <Td>{doc.lastUpdated}</Td>
-
-                {/* Status */}
-                <Td>
-                  <Badge
-                    colorScheme={
-                      doc.status === "Approved"
-                        ? "green"
-                        : doc.status === "In Progress"
-                        ? "yellow"
-                        : doc.status === "Rejected"
-                        ? "red"
-                        : "gray"
-                    }
-                    px={2}
-                    py={1}
-                    borderRadius="full"
-                  >
-                    {doc.status}
-                  </Badge>
-                </Td>
-
-                {/* Actions */}
-                <Td textAlign="right">
-                  <IconButton
-                    aria-label="View PDF"
-                    icon={<ViewIcon />}
-                    size="sm"
-                    mr={2}
-                    onClick={() => window.open(doc.fileUrl, "_blank")}
-                  />
-                  <IconButton
-                    aria-label="Edit"
-                    icon={<EditIcon />}
-                    size="sm"
-                    mr={2}
-                    onClick={() => navigate(`/documents/${doc.id}`)}
-                  />
-                  <IconButton
-                    aria-label="Delete"
-                    icon={<DeleteIcon />}
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => handleDelete(doc.id)}
-                  />
+                  {/* Actions */}
+                  <Td textAlign="right">
+                    <IconButton
+                      aria-label="View PDF"
+                      icon={<ViewIcon />}
+                      size="sm"
+                      mr={2}
+                      onClick={() => window.open(doc.fileUrl, "_blank")}
+                    />
+                    <IconButton
+                      aria-label="Edit"
+                      icon={<EditIcon />}
+                      size="sm"
+                      mr={2}
+                      onClick={() => navigate(`/documents/${doc.id}`)}
+                    />
+                    <IconButton
+                      aria-label="Delete"
+                      icon={<DeleteIcon />}
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleDelete(doc.id)}
+                    />
+                  </Td>
+                </Tr>
+              ))
+            ) : (
+              <Tr>
+                <Td colSpan={7} textAlign="center" py={6}>
+                  <Text color="gray.500">No documents found</Text>
                 </Td>
               </Tr>
-            ))
-          ) : (
-            <Tr>
-              <Td colSpan={7} textAlign="center" py={6}>
-                <Text color="gray.500">No documents found</Text>
-              </Td>
-            </Tr>
-          )}
-        </Tbody>
-      </Table>
+            )}
+          </Tbody>
+        </Table>
+      </Box>
     </Box>
   );
 }
