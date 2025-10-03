@@ -31,6 +31,12 @@ import {
   FormLabel,
   Select,
   Container,
+  Stack,
+  TableContainer,
+  Card,
+  CardBody,
+  ButtonGroup,
+  Heading,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, ViewIcon, SearchIcon } from "@chakra-ui/icons";
 
@@ -254,20 +260,21 @@ export default function Documents() {
   return (
     <Container p={[1, 2, 2, 8]} maxW="container.xl" mx="auto">
       {/* Header */}
-      <Flex
-        justify="space-between"
-        align="center"
-        mb={6}
-        flexWrap="wrap"
-        gap={3}
-      >
-        <Box fontSize="xl" fontWeight="bold">
-          Documents
-        </Box>
-        <Flex align="center" gap={3} justifyContent="flex-end" flex="1">
-          <Button colorScheme="purple" onClick={openAddModal} w="200px">
-            + Create Document
-          </Button>
+      <Stack spacing={4}>
+        <Stack w="full" spacing={1}>
+          <Text
+            fontSize="2xs"
+            opacity={0.8}
+            textTransform="uppercase"
+            letterSpacing={1}
+          >
+            You are viewing
+          </Text>
+          <Heading size="md" fontWeight="bold">
+            Documents
+          </Heading>
+        </Stack>
+        <Flex justify="space-between" align="center" mb={6} gap={3}>
           <InputGroup maxW="500px">
             <InputLeftElement pointerEvents="none">
               <SearchIcon color="gray.400" />
@@ -278,102 +285,99 @@ export default function Documents() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </InputGroup>
+          <Button colorScheme="purple" onClick={openAddModal} w="200px">
+            + Create Document
+          </Button>
         </Flex>
-      </Flex>
+      </Stack>
 
       {/* Table */}
-      <Box overflowX="auto">
-        <Table variant="simple" size="md">
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Owner</Th>
-              <Th>Size</Th>
-              <Th>Date Created</Th>
-              <Th>Last Updated</Th>
-              <Th>Status</Th>
-              <Th textAlign="right">Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {filteredDocuments.length > 0 ? (
-              filteredDocuments.map((doc) => (
-                <Tr key={doc.id} _hover={{ bg: "gray.50" }}>
-                  <Td>
-                    <Flex align="center" gap={3}>
-                      <Box
-                        bg="red.100"
-                        color="red.600"
-                        px={2}
-                        py={1}
-                        borderRadius="md"
-                        fontSize="xs"
-                        fontWeight="bold"
-                      >
-                        {doc.fileName.split(".").pop().toUpperCase()}
-                      </Box>
-                      <Box>
-                        <Box fontWeight="medium">{doc.title}</Box>
-                        <Text fontSize="sm" color="gray.500">
-                          {doc.size}
-                        </Text>
-                      </Box>
-                    </Flex>
-                  </Td>
-                  <Td>
-                    <Flex align="center" gap={2}>
-                      <Avatar size="sm" name={doc.author} />
-                      <Box>{doc.author}</Box>
-                    </Flex>
-                  </Td>
-                  <Td>{doc.size}</Td>
-                  <Td>{doc.dateCreated}</Td>
-                  <Td>{doc.lastUpdated}</Td>
-                  <Td>
-                    <Badge
-                      colorScheme={getStatusColor(doc.status)}
-                      px={2}
-                      py={1}
-                      borderRadius="full"
-                    >
-                      {doc.status}
-                    </Badge>
-                  </Td>
-                  <Td textAlign="right">
-                    <IconButton
-                      aria-label="View"
-                      icon={<ViewIcon />}
-                      size="sm"
-                      mr={2}
-                      onClick={() => handleView(doc.fileUrl)}
-                    />
-                    <IconButton
-                      aria-label="Edit"
-                      icon={<EditIcon />}
-                      size="sm"
-                      mr={2}
-                      onClick={() => openEditModal(doc)}
-                    />
-                    <IconButton
-                      aria-label="Delete"
-                      icon={<DeleteIcon />}
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => confirmDelete(doc.id)}
-                    />
-                  </Td>
+      <Card>
+        <CardBody p={0}>
+          <TableContainer>
+            <Table variant="simple" size="md">
+              <Thead bg="purple.50">
+                <Tr>
+                  <Th>Item</Th>
+                  <Th>Owner</Th>
+                  <Th>Last Updated</Th>
+                  <Th textAlign="right">Status</Th>
+                  <Th textAlign="right">Action</Th>
                 </Tr>
-              ))
-            ) : (
-              <Tr>
-                <Td colSpan={7} textAlign="center" py={6}>
-                  <Text color="gray.500">No documents found</Text>
-                </Td>
-              </Tr>
-            )}
-          </Tbody>
-        </Table>
-      </Box>
+              </Thead>
+              <Tbody>
+                {filteredDocuments.length > 0 ? (
+                  filteredDocuments.map((doc) => (
+                    <Tr key={doc.id} _hover={{ bg: "gray.50" }}>
+                      <Td>
+                        <Stack spacing={0}>
+                          <Heading size="sm">{doc.title}</Heading>
+                          <Text
+                            fontSize="sm"
+                            color="gray.500"
+                            verticalAlign="middle"
+                          >
+                            <Badge as="span" colorScheme="purple" size="2xs">
+                              {doc.fileName.split(".").pop().toUpperCase()}
+                            </Badge>{" "}
+                            &middot; {doc.size}
+                          </Text>
+                        </Stack>
+                      </Td>
+                      <Td>
+                        <Flex align="center" gap={2}>
+                          <Avatar size="sm" name={doc.author} />
+                          <Box>{doc.author}</Box>
+                        </Flex>
+                      </Td>
+                      <Td>{doc.lastUpdated}</Td>
+                      <Td textAlign="right">
+                        <Badge colorScheme={getStatusColor(doc.status)}>
+                          {doc.status}
+                        </Badge>
+                      </Td>
+                      <Td textAlign="right">
+                        <ButtonGroup spacing={2}>
+                          <IconButton
+                            aria-label="View"
+                            icon={<ViewIcon />}
+                            size="sm"
+                            colorScheme="blue"
+                            variant="outline"
+                            onClick={() => handleView(doc.fileUrl)}
+                          />
+                          <IconButton
+                            aria-label="Edit"
+                            icon={<EditIcon />}
+                            size="sm"
+                            colorScheme="green"
+                            variant="outline"
+                            onClick={() => openEditModal(doc)}
+                          />
+                          <IconButton
+                            aria-label="Delete"
+                            icon={<DeleteIcon />}
+                            size="sm"
+                            colorScheme="red"
+                            variant="outline"
+                            onClick={() => confirmDelete(doc.id)}
+                          />
+                        </ButtonGroup>
+                      </Td>
+                    </Tr>
+                  ))
+                ) : (
+                  <Tr>
+                    <Td colSpan={7} textAlign="center" py={6}>
+                      <Text color="gray.500">No documents found</Text>
+                    </Td>
+                  </Tr>
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </CardBody>
+      </Card>
 
       {/* Add/Edit Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
