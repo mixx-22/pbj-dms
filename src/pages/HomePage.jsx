@@ -14,6 +14,7 @@ import {
   Flex,
   Progress,
   Tooltip,
+  Container,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -99,7 +100,7 @@ export default function HomePage() {
   };
 
   return (
-    <Box p={8} maxW="1400px" mx="auto">
+    <Container p={[1, 2, 2, 8]} maxW="container.xl" mx="auto">
       {/* Header */}
       <Flex justify="space-between" align="flex-end" mb={6} flexWrap="wrap">
         <Box>
@@ -174,7 +175,10 @@ export default function HomePage() {
       </SimpleGrid>
 
       {/* Detailed Cards */}
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+      <SimpleGrid
+        columns={user.userType !== "user" ? [1, 1, 1, 3] : [1, 1, 1, 2]}
+        spacing={4}
+      >
         <Card>
           <CardBody>
             <Heading size="md" mb={3}>
@@ -267,6 +271,6 @@ export default function HomePage() {
           </Tooltip>
         </Box>
       </Stack>
-    </Box>
+    </Container>
   );
 }
