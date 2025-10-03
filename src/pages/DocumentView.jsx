@@ -7,9 +7,9 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Badge,
   Text,
   Spacer,
+  Select,   // ✅ import Select
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import Swal from "sweetalert2";
@@ -18,7 +18,6 @@ export default function DocumentView() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Dummy fetch: you can replace with API later
   const [formData, setFormData] = useState({
     id: null,
     title: "",
@@ -26,10 +25,10 @@ export default function DocumentView() {
     category: "",
     status: "Pending",
     fileName: "",
+    fileUrl: "",
   });
 
   useEffect(() => {
-    // simulate fetching the document by ID
     const dummyDocs = [
       {
         id: 1,
@@ -38,6 +37,7 @@ export default function DocumentView() {
         category: "Business",
         status: "Approved",
         fileName: "proposal.pdf",
+        fileUrl: "/files/proposal.pdf",
       },
       {
         id: 2,
@@ -45,7 +45,8 @@ export default function DocumentView() {
         author: "Phoenix Baker",
         category: "Marketing",
         status: "Pending",
-        fileName: "marketing-plan.docx",
+        fileName: "marketing-plan.pdf",
+        fileUrl: "/files/marketing-plan.pdf",
       },
     ];
     const doc = dummyDocs.find((d) => d.id === Number(id));
@@ -76,13 +77,20 @@ export default function DocumentView() {
     });
   };
 
-  // Dropzone
   const onDrop = (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
-      setFormData({ ...formData, fileName: acceptedFiles[0].name });
+      const file = acceptedFiles[0];
+      setFormData({
+        ...formData,
+        fileName: file.name,
+        fileUrl: URL.createObjectURL(file),
+      });
     }
   };
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "application/pdf": [".pdf"] },
+  });
 
   return (
     <Box p={6}>
@@ -116,16 +124,21 @@ export default function DocumentView() {
         />
       </FormControl>
 
+      {/* ✅ Status Dropdown */}
       <FormControl mb={3}>
         <FormLabel>Status</FormLabel>
-        <Input
+        <Select
           value={formData.status}
           onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-        />
+        >
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </Select>
       </FormControl>
 
       <FormControl mb={3}>
-        <FormLabel>Upload File</FormLabel>
+        <FormLabel>Upload File (PDF only)</FormLabel>
         <Box
           {...getRootProps()}
           p={5}
@@ -137,10 +150,10 @@ export default function DocumentView() {
         >
           <input {...getInputProps()} />
           {isDragActive ? (
-            <Text color="blue.400">Drop the file here...</Text>
+            <Text color="blue.400">Drop the PDF here...</Text>
           ) : (
             <Text color="gray.500">
-              Drag & drop a file here, or click to select one
+              Drag & drop a PDF here, or click to select one
             </Text>
           )}
         </Box>
@@ -150,6 +163,16 @@ export default function DocumentView() {
           </Box>
         )}
       </FormControl>
+
+      {formData.fileName.endsWith(".pdf") && formData.fileUrl && (
+        <Button
+          mt={3}
+          colorScheme="teal"
+          onClick={() => window.open(formData.fileUrl, "_blank")}
+        >
+          View PDF
+        </Button>
+      )}
 
       <Box mt={6} display="flex" gap={3}>
         <Button colorScheme="red" onClick={handleDelete}>

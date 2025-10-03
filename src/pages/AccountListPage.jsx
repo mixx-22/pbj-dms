@@ -26,26 +26,45 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { SearchIcon } from "@chakra-ui/icons";
 import Swal from "sweetalert2";
 
 export default function Accounts() {
   const [accounts, setAccounts] = useState([
     {
       id: 1,
-      name: "Olivia Rhye",
-      username: "olivia",
+      name: "Mike Rojim P. Jimenez",
+      username: "mike",
       role: "Product Designer",
-      email: "olivia@untitledui.com",
+      email: "mjimenez@pbj.com",
       status: "Active",
       userType: "Admin",
     },
     {
       id: 2,
-      name: "Phoenix Baker",
-      username: "phoenix",
+      name: "Ajad Singh Parmar",
+      username: "Ajad",
       role: "Product Manager",
-      email: "phoenix@untitledui.com",
+      email: "aparmar@pbj.com",
       status: "Active",
+      userType: "Admin",
+    },
+    {
+      id: 3,
+      name: "Aristotle Bataan",
+      username: "DocYummy",
+      role: "Product Manager",
+      email: "abataan@pbj.com",
+      status: "Active",
+      userType: "User",
+    },
+    {
+      id: 4,
+      name: "Rhoy Sampaga",
+      username: "Rhoy",
+      role: "Accounting Manager",
+      email: "rsampaga@pbj.com",
+      status: "Inactive",
       userType: "User",
     },
   ]);
@@ -60,6 +79,8 @@ export default function Accounts() {
     status: "Active",
     userType: "User",
   });
+
+  const [search, setSearch] = useState("");
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -105,19 +126,50 @@ export default function Accounts() {
     onClose();
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Active":
+        return "green";
+      case "Inactive":
+        return "red";
+      case "Pending":
+        return "yellow";
+      default:
+        return "gray";
+    }
+  };
+
+  const filteredAccounts = accounts.filter(
+    (a) =>
+      a.name.toLowerCase().includes(search.toLowerCase()) ||
+      a.username.toLowerCase().includes(search.toLowerCase()) ||
+      a.email.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <Box p={6}>
-      <Box display="flex" justifyContent="space-between" mb={4}>
+      {/* Header with search + add */}
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
         <Box fontSize="xl" fontWeight="bold">
           Team Members
         </Box>
-        <Button colorScheme="blue" onClick={handleAdd}>
-          Add Account
-        </Button>
+        <Box display="flex" gap={3}>
+          <Input
+            placeholder="Search by name or email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            size="sm"
+            width="250px"
+          />
+          <Button colorScheme="blue" onClick={handleAdd}>
+            + Add Account
+          </Button>
+        </Box>
       </Box>
 
+      {/* Accounts Table */}
       <Table variant="simple" size="md">
-        <Thead>
+        <Thead bg="gray.50">
           <Tr>
             <Th>Name</Th>
             <Th>Status</Th>
@@ -128,8 +180,8 @@ export default function Accounts() {
           </Tr>
         </Thead>
         <Tbody>
-          {accounts.map((acc) => (
-            <Tr key={acc.id}>
+          {filteredAccounts.map((acc) => (
+            <Tr key={acc.id} _hover={{ bg: "gray.50" }}>
               <Td>
                 <Box display="flex" alignItems="center">
                   <Avatar size="sm" name={acc.name} mr={3} />
@@ -142,7 +194,7 @@ export default function Accounts() {
                 </Box>
               </Td>
               <Td>
-                <Badge colorScheme="green">{acc.status}</Badge>
+                <Badge colorScheme={getStatusColor(acc.status)}>{acc.status}</Badge>
               </Td>
               <Td>{acc.role}</Td>
               <Td>{acc.email}</Td>
@@ -172,36 +224,28 @@ export default function Accounts() {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {formData.id ? "Edit Account" : "Add Account"}
-          </ModalHeader>
+          <ModalHeader>{formData.id ? "Edit Account" : "Add Account"}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl mb={3}>
               <FormLabel>Name</FormLabel>
               <Input
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </FormControl>
             <FormControl mb={3}>
               <FormLabel>Username</FormLabel>
               <Input
                 value={formData.username}
-                onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               />
             </FormControl>
             <FormControl mb={3}>
               <FormLabel>Role</FormLabel>
               <Input
                 value={formData.role}
-                onChange={(e) =>
-                  setFormData({ ...formData, role: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               />
             </FormControl>
             <FormControl mb={3}>
@@ -209,18 +253,25 @@ export default function Accounts() {
               <Input
                 type="email"
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
+            </FormControl>
+            <FormControl mb={3}>
+              <FormLabel>Status</FormLabel>
+              <Select
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Pending">Pending</option>
+              </Select>
             </FormControl>
             <FormControl mb={3}>
               <FormLabel>User Type</FormLabel>
               <Select
                 value={formData.userType}
-                onChange={(e) =>
-                  setFormData({ ...formData, userType: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, userType: e.target.value })}
               >
                 <option value="Admin">Admin</option>
                 <option value="User">User</option>

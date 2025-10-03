@@ -10,20 +10,15 @@ import {
   Th,
   Td,
   IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input,
   Badge,
-  useDisclosure,
+  Avatar,
+  InputGroup,
+  InputLeftElement,
+  Input,
+  Flex,
+  Text,
 } from "@chakra-ui/react";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, ViewIcon, SearchIcon } from "@chakra-ui/icons";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
@@ -31,32 +26,40 @@ export default function Documents() {
   const [documents, setDocuments] = useState([
     {
       id: 1,
-      title: "Project Proposal",
-      author: "Olivia Rhye",
-      category: "Business",
-      status: "Approved",
+      title: "Proposal Report",
+      author: "Emily Thompson",
+      status: "In Progress",
       fileName: "proposal.pdf",
+      fileUrl: "/files/proposal.pdf",
+      size: "1.2 MB",
+      dateCreated: "02/17/2024",
+      lastUpdated: "2 hrs ago • Ava Wilson",
     },
     {
       id: 2,
       title: "Marketing Plan",
-      author: "Phoenix Baker",
-      category: "Marketing",
-      status: "Pending",
-      fileName: "marketing-plan.docx",
+      author: "Sophia Martinez",
+      status: "Approved",
+      fileName: "marketing-plan.pdf",
+      fileUrl: "/files/marketing-plan.pdf",
+      size: "3.0 MB",
+      dateCreated: "03/19/2024",
+      lastUpdated: "1 hr ago • Sophia Martinez",
+    },
+    {
+      id: 3,
+      title: "Financial Analysis",
+      author: "Daniel Lewis",
+      status: "Rejected",
+      fileName: "financial-report.pdf",
+      fileUrl: "/files/financial-report.pdf",
+      size: "2.8 MB",
+      dateCreated: "11/02/2023",
+      lastUpdated: "13 hrs ago • Daniel Lewis",
     },
   ]);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [formData, setFormData] = useState({
-    id: null,
-    title: "",
-    author: "",
-    category: "",
-    status: "Pending",
-    fileName: "",
-  });
-
+  const [searchQuery, setSearchQuery] = useState(""); // search state
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
@@ -76,163 +79,139 @@ export default function Documents() {
     });
   };
 
-  const handleEdit = (doc) => {
-    setFormData(doc);
-    onOpen();
-  };
-
-  const handleAdd = () => {
-    setFormData({
-      id: null,
-      title: "",
-      author: "",
-      category: "",
-      status: "Pending",
-      fileName: "",
-    });
-    onOpen();
-  };
-
-  const handleSave = () => {
-    if (formData.id) {
-      // update existing
-      setDocuments(documents.map((d) => (d.id === formData.id ? formData : d)));
-    } else {
-      // add new
-      setDocuments([...documents, { ...formData, id: documents.length + 1 }]);
-    }
-    onClose();
-  };
+  // filter documents based on search query (title or author)
+  const filteredDocuments = documents.filter(
+    (doc) =>
+      doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.author.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Box p={6}>
-      <Box display="flex" justifyContent="space-between" mb={4}>
-        <Box fontSize="xl" fontWeight="bold">
-          Documents
-        </Box>
-        <Button colorScheme="blue" onClick={handleAdd}>
-          Add Document
+      {/* Header Section */}
+      <Flex justify="space-between" align="center" mb={6}>
+        <InputGroup maxW="300px">
+          <InputLeftElement pointerEvents="none">
+            <SearchIcon color="gray.400" />
+          </InputLeftElement>
+          <Input
+            placeholder="Search by title or author"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </InputGroup>
+        <Button colorScheme="blue" onClick={() => navigate("/documents/new")}>
+          + Create Document
         </Button>
-      </Box>
+      </Flex>
 
+      {/* Documents Table */}
       <Table variant="simple" size="md">
         <Thead>
           <Tr>
-            <Th>Title</Th>
-            <Th>Author</Th>
-            <Th>Category</Th>
+            <Th>Name</Th>
+            <Th>Owner</Th>
+            <Th>Size</Th>
+            <Th>Date Created</Th>
+            <Th>Last Updated</Th>
             <Th>Status</Th>
-            <Th>File</Th>
-            <Th textAlign="right">Actions</Th>
+            <Th textAlign="right">Action</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {documents.map((doc) => (
-            <Tr
-              key={doc.id}
-              _hover={{ bg: "gray.50", cursor: "pointer" }}
-              onClick={() => navigate(`/documents/${doc.id}`)}
-            >
-              <Td>{doc.title}</Td>
-              <Td>{doc.author}</Td>
-              <Td>{doc.category}</Td>
-              <Td>
-                <Badge
-                  colorScheme={
-                    doc.status === "Approved"
-                      ? "green"
-                      : doc.status === "Pending"
-                      ? "yellow"
-                      : "red"
-                  }
-                >
-                  {doc.status}
-                </Badge>
-              </Td>
-              <Td>{doc.fileName || "—"}</Td>
-              <Td textAlign="right">
-                <IconButton
-                  aria-label="Edit"
-                  icon={<EditIcon />}
-                  size="sm"
-                  mr={2}
-                  onClick={(e) => {
-                    e.stopPropagation(); // prevent row navigation
-                    handleEdit(doc);
-                  }}
-                />
-                <IconButton
-                  aria-label="Delete"
-                  icon={<DeleteIcon />}
-                  size="sm"
-                  colorScheme="red"
-                  onClick={(e) => {
-                    e.stopPropagation(); // prevent row navigation
-                    handleDelete(doc.id);
-                  }}
-                />
+          {filteredDocuments.length > 0 ? (
+            filteredDocuments.map((doc) => (
+              <Tr key={doc.id} _hover={{ bg: "gray.50" }}>
+                {/* File name */}
+                <Td>
+                  <Flex align="center" gap={3}>
+                    <Box
+                      bg="red.100"
+                      color="red.600"
+                      px={2}
+                      py={1}
+                      borderRadius="md"
+                      fontSize="xs"
+                      fontWeight="bold"
+                    >
+                      PDF
+                    </Box>
+                    <Box>
+                      <Box fontWeight="medium">{doc.title}</Box>
+                      <Text fontSize="sm" color="gray.500">
+                        {doc.size}
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Td>
+
+                {/* Owner */}
+                <Td>
+                  <Flex align="center" gap={2}>
+                    <Avatar size="sm" name={doc.author} />
+                    <Box>{doc.author}</Box>
+                  </Flex>
+                </Td>
+
+                <Td>{doc.size}</Td>
+                <Td>{doc.dateCreated}</Td>
+                <Td>{doc.lastUpdated}</Td>
+
+                {/* Status */}
+                <Td>
+                  <Badge
+                    colorScheme={
+                      doc.status === "Approved"
+                        ? "green"
+                        : doc.status === "In Progress"
+                        ? "yellow"
+                        : doc.status === "Rejected"
+                        ? "red"
+                        : "gray"
+                    }
+                    px={2}
+                    py={1}
+                    borderRadius="full"
+                  >
+                    {doc.status}
+                  </Badge>
+                </Td>
+
+                {/* Actions */}
+                <Td textAlign="right">
+                  <IconButton
+                    aria-label="View PDF"
+                    icon={<ViewIcon />}
+                    size="sm"
+                    mr={2}
+                    onClick={() => window.open(doc.fileUrl, "_blank")}
+                  />
+                  <IconButton
+                    aria-label="Edit"
+                    icon={<EditIcon />}
+                    size="sm"
+                    mr={2}
+                    onClick={() => navigate(`/documents/${doc.id}`)}
+                  />
+                  <IconButton
+                    aria-label="Delete"
+                    icon={<DeleteIcon />}
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleDelete(doc.id)}
+                  />
+                </Td>
+              </Tr>
+            ))
+          ) : (
+            <Tr>
+              <Td colSpan={7} textAlign="center" py={6}>
+                <Text color="gray.500">No documents found</Text>
               </Td>
             </Tr>
-          ))}
+          )}
         </Tbody>
       </Table>
-
-      {/* Add/Edit Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            {formData.id ? "Edit Document" : "Add Document"}
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl mb={3}>
-              <FormLabel>Title</FormLabel>
-              <Input
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl mb={3}>
-              <FormLabel>Author</FormLabel>
-              <Input
-                value={formData.author}
-                onChange={(e) =>
-                  setFormData({ ...formData, author: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl mb={3}>
-              <FormLabel>Category</FormLabel>
-              <Input
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl mb={3}>
-              <FormLabel>Status</FormLabel>
-              <Input
-                value={formData.status}
-                onChange={(e) =>
-                  setFormData({ ...formData, status: e.target.value })
-                }
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" onClick={handleSave}>
-              Save
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </Box>
   );
 }
