@@ -77,16 +77,24 @@ export default function LoginPage() {
             </Heading>
             <Heading
               m={0}
-              color="purple.600"
+              color="yellow.300"
               fontWeight="extrabold"
               fontSize="4xl"
               lineHeight={7}
             >
               DOCS
+              <Heading
+                as="span"
+                color="purple.600"
+                fontSize="inherit"
+                fontWeight="hairline"
+              >
+                YUMMY
+              </Heading>
             </Heading>
           </Stack>
           <Heading my={6} textAlign="center" size="sm">
-            Welcome to DOCS!
+            Take a byte!
           </Heading>
           <VStack spacing={4} align="stretch">
             <FormControl>

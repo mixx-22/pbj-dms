@@ -141,12 +141,20 @@ export default function App() {
                 </Heading>
                 <Heading
                   m={0}
-                  color="white"
                   fontWeight="extrabold"
                   fontSize="4xl"
+                  color="yellow.300"
                   lineHeight={7}
                 >
                   DOCS
+                  <Heading
+                    as="span"
+                    color="white"
+                    fontSize="inherit"
+                    fontWeight="hairline"
+                  >
+                    YUMMY
+                  </Heading>
                 </Heading>
               </Stack>
 
